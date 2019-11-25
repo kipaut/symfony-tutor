@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\MarkdownHelper;
+use Nexy\Slack\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,11 +18,24 @@ class ArticleController extends AbstractController
     private $markdownHelper;
 
     /**
-     * @param MarkdownHelper $markdownHelper
+     * @var bool
      */
-    public function __construct(MarkdownHelper $markdownHelper)
+    private $isDebug;
+    /**
+     * @var Client
+     */
+    private $slack;
+
+    /**
+     * @param MarkdownHelper $markdownHelper
+     * @param Client $slack
+     * @param bool $isDebug
+     */
+    public function __construct(MarkdownHelper $markdownHelper, Client $slack, bool $isDebug)
     {
         $this->markdownHelper = $markdownHelper;
+        $this->slack = $slack;
+        $this->isDebug = $isDebug;
     }
 
     /**
@@ -40,6 +54,17 @@ class ArticleController extends AbstractController
      */
     public function news($name)
     {
+        if ($name == 'slack') {
+            $message = $this->slack->createMessage();
+
+            $message
+                ->from('John Dezer')
+                ->withIcon(':ghost:')
+                ->setText('Test slack !');
+
+            $this->slack->sendMessage($message);
+        }
+
         $comments = [
             'I ate a normal rock once. It did NOT taste like bacon!',
             'Woohoo! I\'m going on an all-asteroid diet!',

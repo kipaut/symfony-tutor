@@ -21,21 +21,21 @@ class MarkdownHelper
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private $markdownLogger;
 
     /**
      * @param MarkdownInterface $markdown
      * @param AdapterInterface $cache
-     * @param LoggerInterface $logger
+     * @param LoggerInterface $markdownLogger
      */
     public function __construct(
         MarkdownInterface $markdown,
         AdapterInterface $cache,
-        LoggerInterface $logger
+        LoggerInterface $markdownLogger
     ) {
         $this->markdown = $markdown;
         $this->cache = $cache;
-        $this->logger = $logger;
+        $this->markdownLogger = $markdownLogger;
     }
 
     /**
@@ -46,7 +46,7 @@ class MarkdownHelper
     public function parse(string $source): string
     {
         if (empty($source)) {
-            $this->logger->info('Empty content');
+            $this->markdownLogger->info('Empty content');
         }
 
         $item = $this->cache->getItem('markdown_'.md5($source));

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {{ title }} {% endblock %}
+{% block title %} {{ article.title }} {% endblock %}
 
 {% block body %}
     <div class="container">
@@ -9,15 +9,17 @@
                 <div class="show-article-container p-3 mt-4">
                     <div class="row">
                         <div class="col-sm-12">
-                            <img class="show-article-img" src="{{ asset('images/asteroid.jpeg') }}">
+                            <img class="show-article-img" src="{{ asset(article.imagePath) }}">
                             <div class="show-article-title-container d-inline-block pl-3 align-middle">
-                                <span class="show-article-title ">News: {{ title }}</span>
+                                <span class="show-article-title ">News: {{ article.title }}</span>
                                 <br>
-                                <span class="align-left article-details"><img class="article-author-img rounded-circle" src="{{ asset('images/alien-profile.png') }}"> Mike Ferengi </span>
-                                <span class="pl-2 article-details"> 3 hours ago</span>
+                                <span class="align-left article-details"><img class="article-author-img rounded-circle" src="{{ asset('images/alien-profile.png') }}"> {{ article.author }} </span>
                                 <span class="pl-2 article-details">
-                                    <span class="js-like-article-count">5</span>
-                                    <a href="{{ path('article_news_like', {name: name}) }}" class="fa fa-heart-o like-article js-like-article"></a>
+                                     {{ article.publishedAt ? article.publishedAt|ago : 'unpublished' }}
+                                </span>
+                                <span class="pl-2 article-details">
+                                    <span class="js-like-article-count">{{ article.heartCount }}</span>
+                                    <a href="{{ path('article_news_like', {name: article.name}) }}" class="fa fa-heart-o like-article js-like-article"></a>
                                 </span>
                             </div>
                         </div>
@@ -25,7 +27,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="article-text">
-                                {{ articleContent|raw }}
+                                {{ article.content|cached_markdown }}
                             </div>
                         </div>
                     </div>

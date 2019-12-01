@@ -27,8 +27,10 @@ class ArticleRepository extends ServiceEntityRepository
     public function findAllPublishedOrderedByNewest(int $limit = 5)
     {
         return $this->addIsPublishedQueryBuilder()
+            ->leftJoin('article.tags', 'tags')
+            ->addSelect('tags')
             ->orderBy('article.publishedAt', 'DESC')
-            ->setMaxResults($limit)
+//            ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
         ;
@@ -52,16 +54,4 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $qb ?: $this->createQueryBuilder('article');
     }
-
-    /*
-    public function findOneBySomeField($value): ?Article
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

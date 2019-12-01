@@ -20,10 +20,14 @@ abstract class BaseFixtures extends Fixture
     protected $faker;
 
     /**
-     * @param ObjectManager $manager
+     * @var array
+     */
+    private $referencesIndex= [];
+
+    /**
      * @return mixed
      */
-    abstract protected function loadData(ObjectManager $manager);
+    abstract protected function loadData();
 
     /**
      * @param ObjectManager $manager
@@ -33,9 +37,16 @@ abstract class BaseFixtures extends Fixture
         $this->manager = $manager;
         $this->faker = Factory::create();
 
-        $this->loadData($manager);
+        $this->loadData();
+
+        $manager->flush();
     }
 
+    /**
+     * @param string $className
+     * @param int $count
+     * @param callable $factory
+     */
     protected function createMany(string $className, int $count, callable $factory)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -48,4 +59,44 @@ abstract class BaseFixtures extends Fixture
         }
     }
 
+    /**
+     * @param string $className
+     * @return object
+     * @throws \Exception
+     */
+    protected function getRandomReference(string $className) {
+        if (!isset($this->referencesIndex[$className])) {
+            $this->referencesIndex[$className] = [];
+
+            foreach ($this->referenceRepository->getReferences() as $key => $ref) {
+                if (strpos($key, $className.'_') === 0) {
+                    $this->referencesIndex[$className][] = $key;
+                }
+            }
+        }
+
+        if (empty($this->referencesIndex[$className])) {
+            throw new \Exception(sprintf('Cannot find any references for class "%s"', $className));
+        }
+
+        $randomReferenceKey = $this->faker->randomElement($this->referencesIndex[$className]);
+
+        return $this->getReference($randomReferenceKey);
+    }
+
+    /**
+     * @param string $className
+     * @param int $count
+     * @return array
+     * @throws \Exception
+     */
+    protected function getRandomReferences(string $className, int $count)
+    {
+        $references = [];
+        while (count($references) < $count) {
+            $references[] = $this->getRandomReference($className);
+        }
+
+        return $references;
+    }
 }

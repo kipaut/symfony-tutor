@@ -3,9 +3,10 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
-use Doctrine\Common\Persistence\ObjectManager;
+use App\Entity\Tag;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ArticleFixtures extends BaseFixtures
+class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
 {
     private static $articleTitles = [
         'Why Asteroids Taste Like Bacon',
@@ -25,7 +26,13 @@ class ArticleFixtures extends BaseFixtures
         'Vasa Pupkin',
     ];
 
-    protected function loadData(ObjectManager $manager)
+    private static $comments = [
+        'I ate a normal rock once. It did NOT taste like bacon!',
+        'Woohoo! I\'m going on an all-asteroid diet!',
+        'I like bacon too! Buy some from my site! bakinsomebacon.com',
+    ];
+
+    protected function loadData()
     {
         $this->createMany(Article::class, 10, function (Article $article, $count) {
             $article
@@ -67,8 +74,19 @@ EOF
             if ($this->faker->boolean(70)) {
                 $article->setPublishedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
             }
-        });
 
-        $manager->flush();
+            $tags = $this->getRandomReferences(Tag::class, $this->faker->numberBetween(0, 5));
+            foreach ($tags as $tag) {
+                $article->addTag($tag);
+            }
+
+        });
+    }
+
+    public function getDependencies()
+    {
+        return [
+            TagFixture::class,
+        ];
     }
 }

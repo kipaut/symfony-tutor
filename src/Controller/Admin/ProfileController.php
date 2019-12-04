@@ -2,33 +2,33 @@
 
 namespace App\Controller\Admin;
 
-use App\Repository\CommentRepository;
-use Knp\Component\Pager\PaginatorInterface;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @IsGranted("ROLE_ADMIN_COMMENT")
+ * @IsGranted("ROLE_ADMIN_PROFILE")
  */
-class CommentController extends AbstractController
+class ProfileController extends AbstractController
 {
     /**
-     * @var CommentRepository
+     * @var UserRepository
      */
     private $repository;
 
     /**
-     * @param CommentRepository $repository
+     * @param UserRepository $repository
      */
-    public function __construct(CommentRepository $repository)
+    public function __construct(UserRepository $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * @Route("/admin/comment", name="comment_admin")
+     * @Route("/admin/profile", name="profile_admin")
      *
      * @param Request $request
      * @param PaginatorInterface $paginator
@@ -46,9 +46,8 @@ class CommentController extends AbstractController
             10 /* limit per page */
         );
 
-        return $this->render('admin/comment/index.html.twig', [
+        return $this->render('admin/profile/index.html.twig', [
             'pagination' => $pagination,
         ]);
     }
-
 }

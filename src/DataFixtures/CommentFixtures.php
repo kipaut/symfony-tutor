@@ -2,21 +2,23 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Article;
 use App\Entity\Comment;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class CommentFixtures extends BaseFixtures implements DependentFixtureInterface
 {
-    public function loadData()
+    protected function loadData()
     {
-        $this->createMany(Comment::class, 100, function (Comment $comment, $count) {
+        $this->createMany('100', 'comment', function ($i) {
+            $comment = new Comment();
             $comment
-                ->setAuthorName($this->faker->name)
+                ->setAuthor($this->getRandomReference('main_user'))
                 ->setContent($this->faker->boolean ? $this->faker->paragraph : $this->faker->sentences(2, true))
                 ->setCreatedAt($this->faker->dateTimeBetween('-1 days', '-1 seconds'))
                 ->setIsDeleted($this->faker->boolean(20))
-                ->setArticle($this->getRandomReference(Article::class));
+                ->setArticle($this->getRandomReference('article'));
+
+            return $comment;
         });
     }
 
@@ -26,6 +28,7 @@ class CommentFixtures extends BaseFixtures implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
+            UserFixtures::class,
             ArticleFixtures::class,
         ];
     }

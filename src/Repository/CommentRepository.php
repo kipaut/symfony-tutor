@@ -39,12 +39,14 @@ class CommentRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('comment')
             ->innerJoin('comment.article', 'article')
-            ->addSelect('article');
+            ->innerJoin('comment.author', 'user')
+            ->addSelect('article', 'user');
 
         if ($term) {
             $qb->andWhere(
                 'comment.content LIKE :term OR 
-                 comment.authorName LIKE :term OR 
+                 user.firstName LIKE :term OR 
+                 user.lastName LIKE :term OR 
                  article.title LIKE :term'
             )->setParameter('term', '%' . $term . '%');
         }

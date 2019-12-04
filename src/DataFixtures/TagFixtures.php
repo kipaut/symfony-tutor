@@ -4,12 +4,15 @@ namespace App\DataFixtures;
 
 use App\Entity\Tag;
 
-class TagFixture extends BaseFixtures
+class TagFixtures extends BaseFixtures
 {
     protected function loadData()
     {
-        $this->createMany(Tag::class, 10, function(Tag $tag) {
+        $this->createMany(10, 'tag', function($i) {
+            $tag = new Tag();
             $tag->setName($this->faker->realText(20));
+
+            return $tag;
         });
     }
 

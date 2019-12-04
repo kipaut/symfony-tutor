@@ -1,13 +1,13 @@
 {% extends 'admin/content_base.html.twig' %}
 
-{% block title %}Manage Comments{% endblock %}
+{% block title %}Manage Profiles{% endblock %}
 
-{% block content_class %}{{ parent() }} show-article-container-border-green{% endblock %}
+{% block content_class %}{{ parent() }} show-profile-container-border-green{% endblock %}
 
 {% block content_body %}
     <div class="row">
         <div class="col-sm-12">
-            <h1>Manage Comments ({{ pagination.getTotalItemCount }})</h1>
+            <h1>Manage Profiles ({{ pagination.getTotalItemCount }})</h1>
 
             <form>
                 <div class="input-group mb-3">
@@ -29,34 +29,44 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Article</th>
-                    <th>Author</th>
-                    <th>Comment</th>
-                    <th>Created</th>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Twitter username</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for comment in pagination %}
+                {% for user in pagination %}
                     <tr>
                         <td>
-                            <a href="{{ path('article_news', {'name': comment.article.name}) }}">
-                                {{ comment.article.title }}
+                            {{ user.id }}
+                        </td>
+                        <td>
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            {{ user.twitterUsername }}
+                        </td>
+                        <td>
+                            {{ user.firstName }}
+                        </td>
+                        <td>
+                            {{ user.lastName }}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_profile', {
+                                '_switch_user': user.email
+                            }) }}">
+                                Login as
                             </a>
-                        </td>
-                        <td>
-                            {{ comment.author.firstName }} {{ comment.author.lastName }}
-                        </td>
-                        <td style="width: 20%;">
-                            {{ comment.content|truncate }}
-                        </td>
-                        <td>
-                            {{ comment.createdAt|ago }}
                         </td>
                     </tr>
                 {% else %}
                     <tr>
                         <td colspan="4" class="text-center">
-                            No comments found
+                            No profiles found
                         </td>
                     </tr>
                 {% endfor %}

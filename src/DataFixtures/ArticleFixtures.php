@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
-use App\Entity\Tag;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
@@ -20,24 +19,13 @@ class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
         'lightspeed.png',
     ];
 
-    private static $articleAuthors = [
-        'Mike Ferengi',
-        'Amy Oort',
-        'Vasa Pupkin',
-    ];
-
-    private static $comments = [
-        'I ate a normal rock once. It did NOT taste like bacon!',
-        'Woohoo! I\'m going on an all-asteroid diet!',
-        'I like bacon too! Buy some from my site! bakinsomebacon.com',
-    ];
-
     protected function loadData()
     {
-        $this->createMany(Article::class, 10, function (Article $article, $count) {
+        $this->createMany(10, 'article', function ($i) {
+            $article = new Article();
             $article
                 ->setTitle($this->faker->randomElement(self::$articleTitles))
-                ->setAuthor($this->faker->randomElement(self::$articleAuthors))
+                ->setAuthor($this->getRandomReference('admin_user'))
                 ->setHeartCount($this->faker->numberBetween(1, 100))
                 ->setImageFileName($this->faker->randomElement(self::$articleImages))
                 ->setContent(<<<EOF
@@ -75,18 +63,20 @@ EOF
                 $article->setPublishedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
             }
 
-            $tags = $this->getRandomReferences(Tag::class, $this->faker->numberBetween(0, 5));
+            $tags = $this->getRandomReferences('tag', $this->faker->numberBetween(0, 5));
             foreach ($tags as $tag) {
                 $article->addTag($tag);
             }
 
+            return $article;
         });
     }
 
     public function getDependencies()
     {
         return [
-            TagFixture::class,
+            UserFixtures::class,
+            TagFixtures::class,
         ];
     }
 }

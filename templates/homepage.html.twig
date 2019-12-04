@@ -33,7 +33,7 @@
                                     </small>
                                 {% endfor %}
                                 <br>
-                                <span class="align-left article-details"><img class="article-author-img rounded-circle" src="{{ asset('images/alien-profile.png') }}"> {{ news.author }} </span>
+                                <span class="align-left article-details"><img class="article-author-img rounded-circle" src="{{ asset('images/alien-profile.png') }}"> {{ news.author.firstName }} {{ news.author.lastName }} </span>
                                 <span class="pl-5 article-details float-right">{{ news.publishedAt|ago }}</span>
                             </div>
                         </a>

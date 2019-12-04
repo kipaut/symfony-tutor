@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20191127125223 extends AbstractMigration
+final class Version20191203162422 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,7 @@ final class Version20191127125223 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_23A0E665E237E06 ON article');
-        $this->addSql('ALTER TABLE article DROP content');
+        $this->addSql('ALTER TABLE user ADD password VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -31,7 +30,6 @@ final class Version20191127125223 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE article ADD content LONGTEXT DEFAULT NULL COLLATE utf8mb4_unicode_ci');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_23A0E665E237E06 ON article (name)');
+        $this->addSql('ALTER TABLE user DROP password');
     }
 }

@@ -34,7 +34,7 @@ class Tag
     private $slug;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="tags")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="tags", fetch="EXTRA_LAZY")
      */
     private $articles;
 

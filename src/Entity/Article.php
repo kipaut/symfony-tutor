@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -25,6 +27,7 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Write title")
      */
     private $title;
 
@@ -61,15 +64,25 @@ class Article
     private $comments;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles" fetch="EXTRA_LAZY")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles", fetch="EXTRA_LAZY")
      */
     private $tags;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="articles" fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="articles", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $location;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $specificLocationName;
 
     public function __construct()
     {
@@ -130,6 +143,11 @@ class Article
         return $this;
     }
 
+    public function isPublished(): bool
+    {
+        return $this->publishedAt !== null;
+    }
+
     public function getHeartCount(): ?int
     {
         return $this->heartCount;
@@ -156,7 +174,7 @@ class Article
 
     public function getImagePath(): ?string
     {
-        return 'images/' . $this->getImageFileName();
+        return 'images/'.$this->getImageFileName();
     }
 
     public function increaseHeartCount(): self
@@ -239,6 +257,46 @@ class Article
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (stripos($this->getTitle(), 'the borg') !== false) {
+            $context->buildViolation('Um.. the Bork kinda makes us nervous')
+                ->atPath('title')
+                ->addViolation();
+        }
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+
+        if (!$this->location || $this->location === 'interstellar_space') {
+            $this->setSpecificLocationName(null);
+        }
+
+        return $this;
+    }
+
+    public function getSpecificLocationName(): ?string
+    {
+        return $this->specificLocationName;
+    }
+
+    public function setSpecificLocationName(?string $specificLocationName): self
+    {
+        $this->specificLocationName = $specificLocationName;
 
         return $this;
     }

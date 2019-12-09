@@ -29,10 +29,6 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/admin/profile", name="profile_admin")
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(Request $request, PaginatorInterface $paginator)
     {
@@ -46,8 +42,11 @@ class ProfileController extends AbstractController
             10 /* limit per page */
         );
 
-        return $this->render('admin/profile/index.html.twig', [
-            'pagination' => $pagination,
-        ]);
+        return $this->render(
+            'admin/profile/index.html.twig',
+            [
+                'pagination' => $pagination,
+            ]
+        );
     }
 }

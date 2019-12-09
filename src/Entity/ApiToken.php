@@ -27,7 +27,7 @@ class ApiToken
     private $expiresAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="apiTokens")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="apiTokens", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

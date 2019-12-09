@@ -54,9 +54,12 @@ class MarkdownHelper
     public function parse(string $source): string
     {
         if (empty($source)) {
-            $this->markdownLogger->info('Empty content', [
-                'user' => $this->security->getUser(),
-            ]);
+            $this->markdownLogger->info(
+                'Empty content',
+                [
+                    'user' => $this->security->getUser(),
+                ]
+            );
         }
 
         $item = $this->cache->getItem('markdown_'.md5($source));

@@ -9,11 +9,15 @@ class ApiTokenFixtures extends BaseFixtures implements DependentFixtureInterface
 {
     protected function loadData()
     {
-        $this->createMany(20, 'api_token', function ($i) {
-            $apiToken = new ApiToken($this->getRandomReference('main_user'));
+        $this->createMany(
+            20,
+            'api_token',
+            function ($i) {
+                $apiToken = new ApiToken($this->getRandomReference('main_user'));
 
-            return $apiToken;
-        });
+                return $apiToken;
+            }
+        );
     }
 
     /**

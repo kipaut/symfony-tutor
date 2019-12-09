@@ -21,19 +21,16 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $limit
      * @return Article[]
      */
-    public function findAllPublishedOrderedByNewest(int $limit = 5)
+    public function findAllPublishedOrderedByNewest()
     {
         return $this->addIsPublishedQueryBuilder()
             ->leftJoin('article.tags', 'tags')
             ->addSelect('tags')
             ->orderBy('article.publishedAt', 'DESC')
-//            ->setMaxResults($limit)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**

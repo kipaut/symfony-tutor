@@ -44,9 +44,11 @@ class ApiTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $token = $this->apiTokenRepository->findOneBy([
-            'token' => $credentials
-        ]);
+        $token = $this->apiTokenRepository->findOneBy(
+            [
+                'token' => $credentials,
+            ]
+        );
 
         if (!$token) {
             throw new CustomUserMessageAuthenticationException(
@@ -70,9 +72,11 @@ class ApiTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        return new JsonResponse([
-            'message' => $exception->getMessageKey()
-        ], 401);
+        return new JsonResponse(
+            [
+                'message' => $exception->getMessageKey(),
+            ], 401
+        );
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

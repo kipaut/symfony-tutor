@@ -29,10 +29,13 @@ class SlackClient
      */
     public function sendMessage(string $from, string $message)
     {
-        $this->logInfo('Send slack message', [
-            'from' => $from,
-            'message' => $message,
-        ]);
+        $this->logInfo(
+            'Send slack message',
+            [
+                'from' => $from,
+                'message' => $message,
+            ]
+        );
 
         $slackMessage = $this->slack->createMessage();
 

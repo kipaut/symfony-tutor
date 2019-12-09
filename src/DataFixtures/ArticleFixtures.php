@@ -21,14 +21,18 @@ class ArticleFixtures extends BaseFixtures implements DependentFixtureInterface
 
     protected function loadData()
     {
-        $this->createMany(10, 'article', function ($i) {
-            $article = new Article();
-            $article
-                ->setTitle($this->faker->randomElement(self::$articleTitles))
-                ->setAuthor($this->getRandomReference('admin_user'))
-                ->setHeartCount($this->faker->numberBetween(1, 100))
-                ->setImageFileName($this->faker->randomElement(self::$articleImages))
-                ->setContent(<<<EOF
+        $this->createMany(
+            10,
+            'article',
+            function ($i) {
+                $article = new Article();
+                $article
+                    ->setTitle($this->faker->randomElement(self::$articleTitles))
+                    ->setAuthor($this->getRandomReference('admin_user'))
+                    ->setHeartCount($this->faker->numberBetween(1, 100))
+                    ->setImageFileName($this->faker->randomElement(self::$articleImages))
+                    ->setContent(
+                        <<<EOF
 Spicy jalapeno bacon ipsum dolor amet veniam shank in dolore. Ham hock nisi landjaeger cow,
 lorem proident beef ribs aute enim veniam ut cillum pork chuck picanha. Dolore reprehenderit
 labore minim pork belly spare ribs cupim short loin in. Elit exercitation eiusmod dolore cow
@@ -57,19 +61,20 @@ Minim strip steak fugiat nisi est, meatloaf pig aute. Swine rump turducken nulla
 belly tongue alcatra, shoulder excepteur in beef bresaola duis ham bacon eiusmod. Doner drumstick short loin,
 adipisicing cow cillum tenderloin.
 EOF
-            );
+                    );
 
-            if ($this->faker->boolean(70)) {
-                $article->setPublishedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
+                if ($this->faker->boolean(70)) {
+                    $article->setPublishedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
+                }
+
+                $tags = $this->getRandomReferences('tag', $this->faker->numberBetween(0, 5));
+                foreach ($tags as $tag) {
+                    $article->addTag($tag);
+                }
+
+                return $article;
             }
-
-            $tags = $this->getRandomReferences('tag', $this->faker->numberBetween(0, 5));
-            foreach ($tags as $tag) {
-                $article->addTag($tag);
-            }
-
-            return $article;
-        });
+        );
     }
 
     public function getDependencies()

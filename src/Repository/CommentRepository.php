@@ -48,7 +48,7 @@ class CommentRepository extends ServiceEntityRepository
                  user.firstName LIKE :term OR 
                  user.lastName LIKE :term OR 
                  article.title LIKE :term'
-            )->setParameter('term', '%' . $term . '%');
+            )->setParameter('term', '%'.$term.'%');
         }
 
         return $qb->orderBy('comment.createdAt', 'DESC');

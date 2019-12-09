@@ -35,8 +35,13 @@ class ProfileController extends AbstractController
     {
         $user = $this->getUser();
 
-        return $this->json($user, 200, [], [
-            'groups' => ['main']
-        ]);
+        return $this->json(
+            $user,
+            200,
+            [],
+            [
+                'groups' => ['main'],
+            ]
+        );
     }
 }

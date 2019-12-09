@@ -21,6 +21,30 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return User[]
+     */
+    public function findAllEmailAlphabetical()
+    {
+        return $this->createQueryBuilder('user')
+            ->orderBy('user.email', 'ASC')
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllMatching(string $query, int $limit = 5)
+    {
+        return $this->createQueryBuilder('user')
+            ->andWhere('user.email LIKE :query')
+            ->setParameter('query', '%'.$query.'%')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param null|string $term
      * @return QueryBuilder
      */
@@ -34,7 +58,7 @@ class UserRepository extends ServiceEntityRepository
                  user.firstName LIKE :term OR 
                  user.lastName LIKE :term OR 
                  user.twitterUsername LIKE :term OR'
-            )->setParameter('term', '%' . $term . '%');
+            )->setParameter('term', '%'.$term.'%');
         }
 
         return $qb->orderBy('user.createdAt', 'DESC');

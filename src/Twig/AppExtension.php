@@ -45,9 +45,7 @@ class AppExtension extends AbstractExtension implements ServiceSubscriberInterfa
     public static function getSubscribedServices()
     {
         return [
-            MarkdownHelper::class
+            MarkdownHelper::class,
         ];
     }
-
-
 }

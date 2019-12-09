@@ -25,7 +25,7 @@ class Comment
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="comments" fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="comments", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     private $article;
@@ -36,7 +36,7 @@ class Comment
     private $isDeleted = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments" fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;

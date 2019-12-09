@@ -6,11 +6,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="You already registered!"
+ * )
  */
 class User implements UserInterface
 {
@@ -27,6 +33,8 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups("main")
+     * @Assert\NotBlank(message="Please enter an email")
+     * @Assert\Email()
      */
     private $email;
 
@@ -36,7 +44,7 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups("main")
      */
     private $firstName;
@@ -59,25 +67,35 @@ class User implements UserInterface
     private $twitterUsername;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ApiToken", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ApiToken", mappedBy="user", fetch="EXTRA_LAZY", orphanRemoval=true)
      */
     private $apiTokens;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author", fetch="EXTRA_LAZY")
      */
     private $articles;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author", fetch="EXTRA_LAZY")
      */
     private $comments;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $agreedTermsAt;
 
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getFirstName().' '.$this->getLastName();
     }
 
     public function getId(): ?int
@@ -104,7 +122,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -196,7 +214,7 @@ class User implements UserInterface
 
     public function getAvatarUrl(int $size = null): string
     {
-        return 'https://robohash.org/' . $this->getEmail() . ($size ? "?size={$size}x{$size}" : '');
+        return 'https://robohash.org/'.$this->getEmail().($size ? "?size={$size}x{$size}" : '');
     }
 
     /**
@@ -288,6 +306,18 @@ class User implements UserInterface
                 $comment->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAgreedTermsAt(): ?\DateTimeInterface
+    {
+        return $this->agreedTermsAt;
+    }
+
+    public function agreeToTerms(): self
+    {
+        $this->agreedTermsAt = new \DateTime();
 
         return $this;
     }

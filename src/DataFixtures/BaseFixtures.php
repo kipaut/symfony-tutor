@@ -52,8 +52,8 @@ abstract class BaseFixtures extends Fixture
      *           return $user;
      *      });
      *
-     * @param int      $count
-     * @param string   $groupName Tag these created objects with this group name,
+     * @param int $count
+     * @param string $groupName Tag these created objects with this group name,
      *                            and use this later with getRandomReference(s)
      *                            to fetch only from this specific group.
      * @param callable $factory
@@ -64,7 +64,9 @@ abstract class BaseFixtures extends Fixture
             $entity = $factory($i);
 
             if (null === $entity) {
-                throw new \LogicException('Did you forget to return the entity object from your callback to BaseFixture::createMany()?');
+                throw new \LogicException(
+                    'Did you forget to return the entity object from your callback to BaseFixture::createMany()?'
+                );
             }
 
             $this->manager->persist($entity);
@@ -78,7 +80,8 @@ abstract class BaseFixtures extends Fixture
      * @param string $groupName
      * @return object
      */
-    protected function getRandomReference(string $groupName) {
+    protected function getRandomReference(string $groupName)
+    {
         if (!isset($this->referencesIndex[$groupName])) {
             $this->referencesIndex[$groupName] = [];
 
@@ -90,7 +93,9 @@ abstract class BaseFixtures extends Fixture
         }
 
         if (empty($this->referencesIndex[$groupName])) {
-            throw new \InvalidArgumentException(sprintf('Did not find any references saved with the group name "%s"', $groupName));
+            throw new \InvalidArgumentException(
+                sprintf('Did not find any references saved with the group name "%s"', $groupName)
+            );
         }
 
         $randomReferenceKey = $this->faker->randomElement($this->referencesIndex[$groupName]);

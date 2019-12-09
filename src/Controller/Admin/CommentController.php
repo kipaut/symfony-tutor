@@ -29,10 +29,6 @@ class CommentController extends AbstractController
 
     /**
      * @Route("/admin/comment", name="comment_admin")
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(Request $request, PaginatorInterface $paginator)
     {
@@ -46,9 +42,12 @@ class CommentController extends AbstractController
             10 /* limit per page */
         );
 
-        return $this->render('admin/comment/index.html.twig', [
-            'pagination' => $pagination,
-        ]);
+        return $this->render(
+            'admin/comment/index.html.twig',
+            [
+                'pagination' => $pagination,
+            ]
+        );
     }
 
 }

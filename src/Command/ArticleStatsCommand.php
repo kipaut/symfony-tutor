@@ -18,8 +18,7 @@ class ArticleStatsCommand extends Command
         $this
             ->setDescription('Return some article stats')
             ->addArgument('name', InputArgument::REQUIRED, 'The article\'s name')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'text')
-        ;
+            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'text');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -29,7 +28,7 @@ class ArticleStatsCommand extends Command
 
         $data = [
             'name' => $name,
-            'hearts' => rand(10, 100)
+            'hearts' => rand(10, 100),
         ];
 
         switch ($input->getOption('format')) {

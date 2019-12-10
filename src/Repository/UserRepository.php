@@ -34,21 +34,19 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @return User[]
      */
-    public function findAllMatching(string $query, int $limit = 5)
+    public function findByNames(string $query, int $limit = 5)
     {
-        return $this->createQueryBuilder('user')
-            ->andWhere('user.email LIKE :query')
-            ->setParameter('query', '%'.$query.'%')
-            ->setMaxResults($limit)
+        return $this->getByNamesQueryBuilder($query, $limit)
             ->getQuery()
             ->getResult();
     }
 
     /**
      * @param null|string $term
+     * @param int|null $limit
      * @return QueryBuilder
      */
-    public function getWithSearchQueryBuilder(?string $term): QueryBuilder
+    public function getByNamesQueryBuilder(?string $term, int $limit = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('user');
 
@@ -56,9 +54,12 @@ class UserRepository extends ServiceEntityRepository
             $qb->andWhere(
                 'user.email LIKE :term OR 
                  user.firstName LIKE :term OR 
-                 user.lastName LIKE :term OR 
-                 user.twitterUsername LIKE :term OR'
+                 user.lastName LIKE :term'
             )->setParameter('term', '%'.$term.'%');
+        }
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
         }
 
         return $qb->orderBy('user.createdAt', 'DESC');

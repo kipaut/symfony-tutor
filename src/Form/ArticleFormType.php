@@ -88,33 +88,6 @@ class ArticleFormType extends AbstractType
         );
     }
 
-    private function setupSpecificLocationNameField(FormInterface $form, ?string $location)
-    {
-        if (null === $location) {
-            $form->remove('specificLocationName');
-
-            return;
-        }
-
-        $choices = $this->getLocationNameChoices($location);
-
-        if (null === $choices) {
-            $form->remove('specificLocationName');
-
-            return;
-        }
-
-        $form->add(
-            'specificLocationName',
-            ChoiceType::class,
-            [
-                'placeholder' => 'Where exactly?',
-                'choices' => $choices,
-                'required' => false,
-            ]
-        );
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
@@ -155,5 +128,32 @@ class ArticleFormType extends AbstractType
         ];
 
         return $locationNameChoices[$location] ?? null;
+    }
+
+    private function setupSpecificLocationNameField(FormInterface $form, ?string $location)
+    {
+        if ($location === null) {
+            $form->remove('specificLocationName');
+
+            return;
+        }
+
+        $choices = $this->getLocationNameChoices($location);
+
+        if ($choices === null) {
+            $form->remove('specificLocationName');
+
+            return;
+        }
+
+        $form->add(
+            'specificLocationName',
+            ChoiceType::class,
+            [
+                'placeholder' => 'Where exactly?',
+                'choices' => $choices,
+                'required' => false,
+            ]
+        );
     }
 }

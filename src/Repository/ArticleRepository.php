@@ -51,4 +51,26 @@ class ArticleRepository extends ServiceEntityRepository
     {
         return $qb ?: $this->createQueryBuilder('article');
     }
+
+    /**
+     * @param null|string $term
+     * @param int|null $limit
+     * @return QueryBuilder
+     */
+    public function getByTitleQueryBuilder(?string $term, int $limit = null): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('article');
+
+        if ($term) {
+            $qb->andWhere(
+                'article.title LIKE :term'
+            )->setParameter('term', '%'.$term.'%');
+        }
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->orderBy('article.createdAt', 'DESC');
+    }
 }

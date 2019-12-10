@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Form\ArticleFormType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -130,14 +131,22 @@ class ArticleController extends AbstractController
     /**
      * @Route("/admin/article", name="admin_article_list")
      */
-    public function list()
+    public function list(Request $request, PaginatorInterface $paginator)
     {
-        $articles = $this->repository->findAll();
+        $title = $request->query->get('title');
+
+        $queryBuilder = $this->repository->getByTitleQueryBuilder($title);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder, /* query NOT result */
+            $request->query->getInt('page', 1) /* page number */,
+            10 /* limit per page */
+        );
 
         return $this->render(
             'admin/article/list.html.twig',
             [
-                'articles' => $articles,
+                'pagination' => $pagination,
             ]
         );
     }

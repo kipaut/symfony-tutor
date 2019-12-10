@@ -29,7 +29,7 @@ class UtilityController extends AbstractController
      */
     public function getUsersApi(Request $request)
     {
-        $users = $this->repository->findAllMatching($request->query->get('query'));
+        $users = $this->repository->findByNames($request->query->get('query'));
 
         return $this->json(
             ['users' => $users],

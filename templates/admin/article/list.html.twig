@@ -1,37 +1,64 @@
 {% extends 'admin/content_base.html.twig' %}
 
-{% block content_body %}
-    <a href="{{ path('admin_article_new') }}" class="btn btn-primary pull-right">
-        Create <span class="fa fa-plus-circle"></span>
-    </a>
-    <h1>All Articles</h1>
+{% block title %}Manage Articles{% endblock %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Published?</th>
-                <th>&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for article in articles %}
-                <tr>
-                    <td>{{ article.title }}</td>
-                    <td>{{ article.author.email }}</td>
-                    <td>
-                        <span class="fa fa-{{ article.isPublished ? 'check' : 'times' }}"></span>
-                    </td>
-                    <td>
-                        <a href="{{ path('admin_article_edit', {
-                            id: article.id
-                        }) }}">
-                            <span class="fa fa-pencil"></span>
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block content_class %}{{ parent() }} show-profile-container-border-green{% endblock %}
+
+{% block content_body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="{{ path('admin_article_new') }}" class="btn btn-primary pull-right">
+                Create <span class="fa fa-plus-circle"></span>
+            </a>
+            <h1>Manage Articles ({{ pagination.getTotalItemCount }})</h1>
+
+            <form>
+                <div class="input-group mb-3">
+                    <input type="text"
+                           name="q"
+                           class="form-control"
+                           value="{{ app.request.query.get('title') }}"
+                           placeholder="Search by title..."
+                    >
+                    <div class="input-group-append">
+                        <button type="submit"
+                                class="btn btn-outline-secondary">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Published?</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in pagination %}
+                        <tr>
+                            <td>{{ article.title }}</td>
+                            <td>{{ article.author.email }}</td>
+                            <td>
+                                <span class="fa fa-{{ article.isPublished ? 'check' : 'times' }}"></span>
+                            </td>
+                            <td>
+                                <a href="{{ path('admin_article_edit', {
+                                    id: article.id
+                                }) }}">
+                                    <span class="fa fa-pencil"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
 {% endblock %}

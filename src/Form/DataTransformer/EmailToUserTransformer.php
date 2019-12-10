@@ -28,7 +28,7 @@ class EmailToUserTransformer implements DataTransformerInterface
             throw new \LogicException('The UserSelectTextType can only be used with User objects');
         }
 
-        return $value->getEmail();
+        return $value->getFirstName() . ' ' . $value->getLastName() . ' (' .  $value->getEmail() . ')';
     }
 
     public function reverseTransform($value)
@@ -38,7 +38,7 @@ class EmailToUserTransformer implements DataTransformerInterface
         }
 
         $callback = $this->finderCallback;
-        $user = $callback($this->userRepository, $value);
+        $user = $callback($this->userRepository, str_replace(['(', ')'], '', stristr($value, '(')));
 
         if (!$user) {
             throw new TransformationFailedException(sprintf('No user found with email "%s"', $value));

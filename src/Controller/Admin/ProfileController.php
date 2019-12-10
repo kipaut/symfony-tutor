@@ -34,7 +34,7 @@ class ProfileController extends AbstractController
     {
         $q = $request->query->get('q');
 
-        $queryBuilder = $this->repository->getWithSearchQueryBuilder($q);
+        $queryBuilder = $this->repository->getByNamesQueryBuilder($q);
 
         $pagination = $paginator->paginate(
             $queryBuilder, /* query NOT result */
